@@ -33,30 +33,11 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.ComponentModel;
-#if CORE || GDI
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using GdiFontFamily = System.Drawing.FontFamily;
-using GdiFont = System.Drawing.Font;
-using GdiFontStyle = System.Drawing.FontStyle;
-#endif
-#if WPF
-using System.Windows.Markup;
-using WpfFontFamily = System.Windows.Media.FontFamily;
-using WpfTypeface = System.Windows.Media.Typeface;
-using WpfGlyphTypeface = System.Windows.Media.GlyphTypeface;
-#endif
-#if UWP
-using UwpFontFamily = Windows.UI.Xaml.Media.FontFamily;
-#endif
 using PdfSharp.Fonts;
 using PdfSharp.Fonts.OpenType;
 using PdfSharp.Internal;
 using PdfSharp.Pdf;
 
-#if SILVERLIGHT
-#pragma warning disable 649
-#endif
 // ReSharper disable ConvertToAutoProperty
 
 namespace PdfSharp.Drawing
@@ -116,175 +97,6 @@ namespace PdfSharp.Drawing
             StyleSimulations = styleSimulations;
             Initialize();
         }
-
-#if CORE || GDI
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Drawing.FontFamily.
-        /// </summary>
-        /// <param name="fontFamily">The System.Drawing.FontFamily.</param>
-        /// <param name="emSize">The em size.</param>
-        /// <param name="style">The font style.</param>
-        public XFont(GdiFontFamily fontFamily, double emSize, XFontStyle style)
-            : this(fontFamily, emSize, style, new XPdfFontOptions(GlobalFontSettings.DefaultFontEncoding))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Drawing.FontFamily.
-        /// </summary>
-        /// <param name="fontFamily">The System.Drawing.FontFamily.</param>
-        /// <param name="emSize">The em size.</param>
-        /// <param name="style">The font style.</param>
-        /// <param name="pdfOptions">Additional PDF options.</param>
-        public XFont(GdiFontFamily fontFamily, double emSize, XFontStyle style, XPdfFontOptions pdfOptions)
-        {
-            _familyName = fontFamily.Name;
-            _gdiFontFamily = fontFamily;
-            _emSize = emSize;
-            _style = style;
-            _pdfOptions = pdfOptions;
-            InitializeFromGdi();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Drawing.Font.
-        /// </summary>
-        /// <param name="font">The System.Drawing.Font.</param>
-        public XFont(GdiFont font)
-            : this(font, new XPdfFontOptions(GlobalFontSettings.DefaultFontEncoding))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Drawing.Font.
-        /// </summary>
-        /// <param name="font">The System.Drawing.Font.</param>
-        /// <param name="pdfOptions">Additional PDF options.</param>
-        public XFont(GdiFont font, XPdfFontOptions pdfOptions)
-        {
-            if (font.Unit != GraphicsUnit.World)
-                throw new ArgumentException("Font must use GraphicsUnit.World.");
-            _gdiFont = font;
-            Debug.Assert(font.Name == font.FontFamily.Name);
-            _familyName = font.Name;
-            _emSize = font.Size;
-            _style = FontStyleFrom(font);
-            _pdfOptions = pdfOptions;
-            InitializeFromGdi();
-        }
-#endif
-
-#if WPF && !SILVERLIGHT
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Windows.Media.FontFamily.
-        /// </summary>
-        /// <param name="fontFamily">The System.Windows.Media.FontFamily.</param>
-        /// <param name="emSize">The em size.</param>
-        /// <param name="style">The font style.</param>
-        public XFont(WpfFontFamily fontFamily, double emSize, XFontStyle style)
-            : this(fontFamily, emSize, style, new XPdfFontOptions(GlobalFontSettings.DefaultFontEncoding))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Drawing.FontFamily.
-        /// </summary>
-        /// <param name="fontFamily">The System.Windows.Media.FontFamily.</param>
-        /// <param name="emSize">The em size.</param>
-        /// <param name="style">The font style.</param>
-        /// <param name="pdfOptions">Additional PDF options.</param>
-        public XFont(WpfFontFamily fontFamily, double emSize, XFontStyle style, XPdfFontOptions pdfOptions)
-        {
-#if !SILVERLIGHT
-            _familyName = fontFamily.FamilyNames[XmlLanguage.GetLanguage("en-US")];
-#else
-            // Best we can do in Silverlight.
-            _familyName = fontFamily.Source;
-#endif
-            _wpfFontFamily = fontFamily;
-            _emSize = emSize;
-            _style = style;
-            _pdfOptions = pdfOptions;
-            InitializeFromWpf();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont" /> class from a System.Windows.Media.Typeface.
-        /// </summary>
-        /// <param name="typeface">The System.Windows.Media.Typeface.</param>
-        /// <param name="emSize">The em size.</param>
-        public XFont(WpfTypeface typeface, double emSize)
-            : this(typeface, emSize, new XPdfFontOptions(GlobalFontSettings.DefaultFontEncoding))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Windows.Media.Typeface.
-        /// </summary>
-        /// <param name="typeface">The System.Windows.Media.Typeface.</param>
-        /// <param name="emSize">The em size.</param>
-        /// <param name="pdfOptions">Additional PDF options.</param>
-        public XFont(WpfTypeface typeface, double emSize, XPdfFontOptions pdfOptions)
-        {
-            _wpfTypeface = typeface;
-            //Debug.Assert(font.Name == font.FontFamily.Name);
-            //_familyName = font.Name;
-            _emSize = emSize;
-            _pdfOptions = pdfOptions;
-            InitializeFromWpf();
-        }
-#endif
-
-#if UWP_
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Drawing.FontFamily.
-        /// </summary>
-        /// <param name="fontFamily">The System.Drawing.FontFamily.</param>
-        /// <param name="emSize">The em size.</param>
-        /// <param name="style">The font style.</param>
-        public XFont(UwpFontFamily fontFamily, double emSize, XFontStyle style)
-            : this(fontFamily, emSize, style, new XPdfFontOptions(GlobalFontSettings.DefaultFontEncoding))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Drawing.FontFamily.
-        /// </summary>
-        /// <param name="fontFamily">The System.Drawing.FontFamily.</param>
-        /// <param name="emSize">The em size.</param>
-        /// <param name="style">The font style.</param>
-        /// <param name="pdfOptions">Additional PDF options.</param>
-        public XFont(UwpFontFamily fontFamily, double emSize, XFontStyle style, XPdfFontOptions pdfOptions)
-        {
-            _familyName = fontFamily.Source;
-            _gdiFontFamily = fontFamily;
-            _emSize = emSize;
-            _style = style;
-            _pdfOptions = pdfOptions;
-            InitializeFromGdi();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Drawing.Font.
-        /// </summary>
-        /// <param name="font">The System.Drawing.Font.</param>
-        public XFont(GdiFont font)
-            : this(font, new XPdfFontOptions(GlobalFontSettings.DefaultFontEncoding))
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XFont"/> class from a System.Drawing.Font.
-        /// </summary>
-        /// <param name="font">The System.Drawing.Font.</param>
-        /// <param name="pdfOptions">Additional PDF options.</param>
-        public XFont(GdiFont font, XPdfFontOptions pdfOptions)
-        {
-            if (font.Unit != GraphicsUnit.World)
-                throw new ArgumentException("Font must use GraphicsUnit.World.");
-            _gdiFont = font;
-            Debug.Assert(font.Name == font.FontFamily.Name);
-            _familyName = font.Name;
-            _emSize = font.Size;
-            _style = FontStyleFrom(font);
-            _pdfOptions = pdfOptions;
-            InitializeFromGdi();
-        }
-#endif
 
         //// Methods
         //public Font(Font prototype, FontStyle newStyle);
@@ -650,9 +462,9 @@ namespace PdfSharp.Drawing
         public double GetHeight()
         {
             double value = CellSpace * _emSize / UnitsPerEm;
-#if CORE || NETFX_CORE || UWP || DNC10
+// #if CORE || NETFX_CORE || UWP || DNC10
             return value;
-#endif
+// #endif
 #if GDI && !WPF
 #if DEBUG_
             double gdiValue = Font.GetHeight();

@@ -30,6 +30,7 @@
 #if CORE
 #endif
 
+using System;
 using System.Diagnostics;
 using PdfSharp.Internal;
 
@@ -67,6 +68,7 @@ namespace PdfSharp.Drawing
         {
             get
             {
+                throw new NotImplementedException();
 #if (CORE_WITH_GDI || GDI) && !WPF
                 try
                 {
@@ -97,6 +99,7 @@ namespace PdfSharp.Drawing
         {
             get
             {
+                throw new NotImplementedException();
 #if (CORE_WITH_GDI || GDI) && !WPF
                 try
                 {

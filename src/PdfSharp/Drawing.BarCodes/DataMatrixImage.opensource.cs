@@ -188,6 +188,7 @@ namespace PdfSharp.Drawing.BarCodes
         /// </summary>
         public XImage CreateImage(char[] code, int rows, int columns, int pixelsize)
         {
+            throw new NotImplementedException();
 #if GDI
       Bitmap bm = new Bitmap(columns * pixelsize, rows * pixelsize);
       using (Graphics gfx = Graphics.FromImage(bm))

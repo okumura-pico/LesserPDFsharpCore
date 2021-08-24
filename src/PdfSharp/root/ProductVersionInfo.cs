@@ -90,7 +90,7 @@ namespace PdfSharp
         /// <summary>
         /// The copyright information.
         /// </summary>
-        public const string Copyright = "Copyright © 2005-2019 empira Software GmbH.";
+        public const string Copyright = "Copyright ï¿½ 2005-2019 empira Software GmbH.";
 
         /// <summary>
         /// The trademark the product.
@@ -270,5 +270,6 @@ namespace PdfSharp
         // .net classic without GDI+ and WPF
         public const string Technology = "";  // no extension
 #endif
+        public const string Technology = "-netstandard20";
     }
 }

@@ -30,36 +30,9 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
-#if CORE || GDI
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using GdiFontFamily = System.Drawing.FontFamily;
-using GdiFont = System.Drawing.Font;
-using GdiFontStyle = System.Drawing.FontStyle;
-#endif
-#if WPF
-using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Media;
-using WpfFontFamily = System.Windows.Media.FontFamily;
-using WpfTypeface = System.Windows.Media.Typeface;
-using WpfGlyphTypeface = System.Windows.Media.GlyphTypeface;
-using WpfStyleSimulations = System.Windows.Media.StyleSimulations;
-#endif
-#if UWP
-using Windows.UI.Xaml.Media;
-#endif
 using PdfSharp.Fonts;
 using PdfSharp.Fonts.OpenType;
 using PdfSharp.Internal;
-
-#pragma warning disable 649
-#if SILVERLIGHT
-#pragma warning disable 219
-#endif
-#if NETFX_CORE
-#pragma warning disable 649
-#endif
 
 namespace PdfSharp.Drawing
 {
@@ -136,7 +109,7 @@ namespace PdfSharp.Drawing
         }
 #endif
 
-#if NETFX_CORE || UWP || DNC10
+// #if NETFX_CORE || UWP || DNC10
         XGlyphTypeface(string key, XFontFamily fontFamily, XFontSource fontSource, XStyleSimulations styleSimulations)
         {
             _key = key;
@@ -152,7 +125,7 @@ namespace PdfSharp.Drawing
 
             Initialize();
         }
-#endif
+// #endif
 
         public static XGlyphTypeface GetOrCreateFrom(string familyName, FontResolvingOptions fontResolvingOptions)
         {
@@ -190,38 +163,38 @@ namespace PdfSharp.Drawing
 #endif
                 // Now create the font family at the first.
                 XFontFamily fontFamily;
-                PlatformFontResolverInfo platformFontResolverInfo = fontResolverInfo as PlatformFontResolverInfo;
-                if (platformFontResolverInfo != null)
-                {
-                    // Case: fontResolverInfo was created by platform font resolver
-                    // and contains platform specific objects that are reused.
-#if CORE || GDI
-                    // Reuse GDI+ font from platform font resolver.
-                    gdiFont = platformFontResolverInfo.GdiFont;
-                    fontFamily = XFontFamily.GetOrCreateFromGdi(gdiFont);
-#endif
-#if WPF
-#if !SILVERLIGHT
-                    // Reuse WPF font family created from platform font resolver.
-                    wpfFontFamily = platformFontResolverInfo.WpfFontFamily;
-                    wpfTypeface = platformFontResolverInfo.WpfTypeface;
-                    wpfGlyphTypeface = platformFontResolverInfo.WpfGlyphTypeface;
-                    fontFamily = XFontFamily.GetOrCreateFromWpf(wpfFontFamily);
-#else
-                    fontFamily = XFontFamily.GetOrCreateFromWpf(new WpfFontFamily(familyName));
-#endif
-#endif
-#if NETFX_CORE || UWP || DNC10
-                    fontFamily = null;
-#endif
-                }
-                else
-                {
+//                 PlatformFontResolverInfo platformFontResolverInfo = fontResolverInfo as PlatformFontResolverInfo;
+//                 if (platformFontResolverInfo != null)
+//                 {
+//                     // Case: fontResolverInfo was created by platform font resolver
+//                     // and contains platform specific objects that are reused.
+// #if CORE || GDI
+//                     // Reuse GDI+ font from platform font resolver.
+//                     gdiFont = platformFontResolverInfo.GdiFont;
+//                     fontFamily = XFontFamily.GetOrCreateFromGdi(gdiFont);
+// #endif
+// #if WPF
+// #if !SILVERLIGHT
+//                     // Reuse WPF font family created from platform font resolver.
+//                     wpfFontFamily = platformFontResolverInfo.WpfFontFamily;
+//                     wpfTypeface = platformFontResolverInfo.WpfTypeface;
+//                     wpfGlyphTypeface = platformFontResolverInfo.WpfGlyphTypeface;
+//                     fontFamily = XFontFamily.GetOrCreateFromWpf(wpfFontFamily);
+// #else
+//                     fontFamily = XFontFamily.GetOrCreateFromWpf(new WpfFontFamily(familyName));
+// #endif
+// #endif
+// #if NETFX_CORE || UWP || DNC10
+//                     fontFamily = null;
+// #endif
+//                 }
+//                 else
+//                 {
                     // Case: fontResolverInfo was created by custom font resolver.
 
                     // Get or create font family for custom font resolver retrieved font source.
                     fontFamily = XFontFamily.GetOrCreateFontFamily(familyName);
-                }
+                // }
 
                 // We have a valid font resolver info. That means we also have an XFontSource object loaded in the cache.
                 XFontSource fontSource = FontFactory.GetFontSourceByFontName(fontResolverInfo.FaceName);
@@ -234,9 +207,9 @@ namespace PdfSharp.Drawing
 #if WPF
                 glyphTypeface = new XGlyphTypeface(typefaceKey, fontFamily, fontSource, fontResolverInfo.StyleSimulations, wpfTypeface, wpfGlyphTypeface);
 #endif
-#if NETFX_CORE || UWP || DNC10
+// #if NETFX_CORE || UWP || DNC10
                 glyphTypeface = new XGlyphTypeface(typefaceKey, fontFamily, fontSource, fontResolverInfo.StyleSimulations);
-#endif
+// #endif
                 GlyphTypefaceCache.AddGlyphTypeface(glyphTypeface);
             }
             finally { Lock.ExitFontFactory(); }

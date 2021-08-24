@@ -240,6 +240,7 @@ namespace PdfSharp.Drawing
         public bool IsStyleAvailable(XFontStyle style)
         {
             XGdiFontStyle xStyle = ((XGdiFontStyle)style) & XGdiFontStyle.BoldItalic;
+            throw new NotImplementedException();
 #if CORE
             throw new InvalidOperationException("In CORE build it is the responsibility of the developer to provide all required font faces.");
 #endif

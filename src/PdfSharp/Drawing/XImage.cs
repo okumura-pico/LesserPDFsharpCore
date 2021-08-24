@@ -930,6 +930,7 @@ namespace PdfSharp.Drawing
         {
             get
             {
+                throw new NotImplementedException();
 #if CORE || GDI || WPF
                 if (_importedImage != null)
                 {
@@ -971,6 +972,7 @@ namespace PdfSharp.Drawing
         {
             get
             {
+                throw new NotImplementedException();
 #if CORE_WITH_GDI || GDI || WPF
                 if (_importedImage != null)
                 {
@@ -1025,6 +1027,7 @@ namespace PdfSharp.Drawing
         {
             get
             {
+                throw new NotImplementedException();
 #if CORE || GDI || WPF
                 if (_importedImage != null)
                 {
@@ -1079,6 +1082,7 @@ namespace PdfSharp.Drawing
         {
             get
             {
+                throw new NotImplementedException();
 #if CORE || GDI || WPF
                 if (_importedImage != null)
                 {
@@ -1130,6 +1134,7 @@ namespace PdfSharp.Drawing
         {
             get
             {
+                throw new NotImplementedException();
 #if CORE || GDI || WPF
                 if (_importedImage != null)
                     return (int)_importedImage.Information.Width;
@@ -1176,6 +1181,7 @@ namespace PdfSharp.Drawing
         {
             get
             {
+                throw new NotImplementedException();
 #if CORE || GDI || WPF
                 if (_importedImage != null)
                     return (int)_importedImage.Information.Height;
@@ -1230,6 +1236,7 @@ namespace PdfSharp.Drawing
         {
             get
             {
+                throw new NotImplementedException();
 #if CORE || GDI || WPF
                 if (_importedImage != null)
                 {
@@ -1279,6 +1286,7 @@ namespace PdfSharp.Drawing
         {
             get
             {
+                throw new NotImplementedException();
 #if CORE || GDI || WPF
                 if (_importedImage != null)
                 {
